@@ -42,9 +42,6 @@ DWORD WINAPI Main_Thread(void* hModule)
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 #endif
 
-	glewInit();
-	glfwInit();
-
 	// Hook to the GameState::keyInput function
 	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x53880)), reinterpret_cast<void*>(&GameState_keyInput_H), reinterpret_cast<void**>(&GameState_keyInput));
 
