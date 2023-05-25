@@ -1,41 +1,40 @@
-//#define DEBUG_CONSOLE // Uncomment this if you want a debug console
+#define DEBUG_CONSOLE // Uncomment this if you want a debug console
 
 // Mod Name. Make sure it matches the mod folder's name
-#define MOD_NAME "4DMod"
+#define MOD_NAME "Custom-State"
 #define MOD_VER "1.0"
+
+#include <4dm.h>
+
+#include "TestState.h"
 
 #include <Windows.h>
 #include <cstdio>
-#include <4dm.h>
+
+#include <glm/gtx/string_cast.hpp>
+
 using namespace fdm;
 
+TestState* testStateL = nullptr;
 
-void(__thiscall* GameState_init)(GameState* self, StateManager& s);
-void __fastcall GameState_init_H(GameState* self, StateManager& s)
+void(__thiscall* GameState_keyInput)(GameState* self, StateManager* s, int key, int scancode, int action, int mods);
+void __fastcall GameState_keyInput_H(GameState* self, StateManager* s, int key, int scancode, int action, int mods)
 {
-	glfwInit(); // for glfw functions to work
+	if (testStateL == nullptr)
+		testStateL = new TestState();
 
-	// Your code that runs at first frame here (it calls when you load into the world)
+	// open TestState when pressing J
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+	{
+		testStateL->init(*s);
 
-	GameState_init(self, s);
+		self->pause(*s);
+
+		s->states.push_back(testStateL);
+	}
+
+	return GameState_keyInput(self, s, key, scancode, action, mods);
 }
-
-void(__thiscall* Player_update)(Player* self, GLFWwindow* window, World* world, double dt);
-void __fastcall Player_update_H(Player* self, GLFWwindow* window, World* world, double dt) 
-{
-	// Your code that runs every frame here (it only calls when you play in world, because its Player's function)
-
-	Player_update(self, window, world, dt);
-}
-
-bool(__thiscall* Player_keyInput)(Player* self, GLFWwindow* window, int key, int scancode, int action, int mods);
-bool __fastcall Player_keyInput_H(Player* self, GLFWwindow* window, int key, int scancode, int action, int mods) 
-{
-	// Your code that runs when Key Input happens (check GLFW Keyboard Input tutorials)|(it only calls when you play in world, because its Player's function)
-
-	return Player_keyInput(self, window, key, scancode, action, mods);
-}
-
 DWORD WINAPI Main_Thread(void* hModule)
 {
 	// Create console window if DEBUG_CONSOLE is defined
@@ -44,16 +43,15 @@ DWORD WINAPI Main_Thread(void* hModule)
 	FILE* fp;
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 #endif
-	// Hook to the GameState::init function
-	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x50690)), reinterpret_cast<void*>(&GameState_init_H), reinterpret_cast<void**>(&GameState_init));
 
-	// Hook to the Player::update function
-	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x7EB40)), reinterpret_cast<void*>(&Player_update_H), reinterpret_cast<void**>(&Player_update));
+	glewInit();
+	glfwInit();
 
-	// Hook to the Player::keyInput function
-	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x81880)), reinterpret_cast<void*>(&Player_keyInput_H), reinterpret_cast<void**>(&Player_keyInput));
+	// Hook to the GameState::keyInput function
+	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x53880)), reinterpret_cast<void*>(&GameState_keyInput_H), reinterpret_cast<void**>(&GameState_keyInput));
 
 	EnableHook(0);
+
 	return true;
 }
 
