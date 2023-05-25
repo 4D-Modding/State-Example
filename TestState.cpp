@@ -153,6 +153,7 @@ void TestState::keyInput(StateManager& s, int key, int scancode, int action, int
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) // close state
 	{
 		s.states[s.states.size() - 2]->resume(s); // resume gamestate
+		close(s);
 		s.states.erase(std::remove(s.states.begin(), s.states.end(), this), s.states.end()); // remove self from states list
 	}
 	else
@@ -169,4 +170,8 @@ void TestState::close(StateManager& s)
 void TestState::windowResize(StateManager& s, int w, int h)
 {
 	updateProjection({ w, h });
+}
+void TestState::update(StateManager& s, double deltaTime)
+{
+
 }

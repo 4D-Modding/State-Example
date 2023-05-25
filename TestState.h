@@ -33,4 +33,5 @@ public:
 	void keyInput(StateManager& s, int key, int scancode, int action, int mods) override;
 	void close(StateManager& s) override;
 	void windowResize(StateManager& s, int w, int h) override;
+	void update(StateManager& s, double deltaTime) override;
 };
