@@ -10,15 +10,15 @@ void StateTest::updateProjection(const glm::ivec2& size)
 	// update all 2D shaders
 	const Shader* textShader = ShaderManager::get("textShader");
 	textShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(textShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 
 	const Shader* tex2DShader = ShaderManager::get("tex2DShader");
 	tex2DShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(tex2DShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(tex2DShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 
 	const Shader* quadShader = ShaderManager::get("quadShader");
 	quadShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(quadShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(quadShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 }
 
 void StateTest::viewportCallback(void* user, const glm::ivec4& pos, const glm::ivec2& scroll)
@@ -37,15 +37,15 @@ void StateTest::viewportCallback(void* user, const glm::ivec4& pos, const glm::i
 	// update all 2D shaders
 	const Shader* textShader = ShaderManager::get("textShader");
 	textShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(textShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 
 	const Shader* tex2DShader = ShaderManager::get("tex2DShader");
 	tex2DShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(tex2DShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(tex2DShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 
 	const Shader* quadShader = ShaderManager::get("quadShader");
 	quadShader->use();
-	glUniformMatrix4fv(glGetUniformLocation(quadShader->ID, "P"), 1, GL_FALSE, &projection2D[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(quadShader->id(), "P"), 1, GL_FALSE, &projection2D[0][0]);
 }
 
 void StateTest::btn1Callback(void* user)
