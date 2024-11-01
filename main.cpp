@@ -1,61 +1,31 @@
-//#define DEBUG_CONSOLE // Uncomment this if you want a debug console
-
-// Mod Name. Make sure it matches the mod folder's name
-#define MOD_NAME "Custom-State"
-#define MOD_VER "1.0"
+//#define DEBUG_CONSOLE // Uncomment this if you want a debug console to start. You can use the Console class to print. You can use Console::inStrings to get input.
 
 #include <4dm.h>
 
-#include "TestState.h"
-
-#include <Windows.h>
-#include <cstdio>
-
 using namespace fdm;
 
-TestState* testStateL = nullptr;
+#include "StateTest.h"
 
-void(__thiscall* GameState_keyInput)(GameState* self, StateManager* s, int key, int scancode, int action, int mods);
-void __fastcall GameState_keyInput_H(GameState* self, StateManager* s, int key, int scancode, int action, int mods)
+// Initialize the DLLMain
+initDLL
+
+$hook(void, StateGame, keyInput, StateManager& s, int key, int scancode, int action, int mods)
 {
-	if (testStateL == nullptr)
-		testStateL = new TestState();
-
-	// open TestState when pressing J
+	// open StateTest by pressing J
 	if (key == GLFW_KEY_J && action == GLFW_PRESS)
 	{
-		testStateL->init(*s);
-
-		self->pause(*s);
-
-		s->states.push_back(testStateL);
+		s.pushState(&StateTest::instanceObj);
 	}
 
-	return GameState_keyInput(self, s, key, scancode, action, mods);
+	original(self, s, key, scancode, action, mods);
 }
-DWORD WINAPI Main_Thread(void* hModule)
-{
-	// Create console window if DEBUG_CONSOLE is defined
-#ifdef DEBUG_CONSOLE
-	AllocConsole();
-	FILE* fp;
-	freopen_s(&fp, "CONOUT$", "w", stdout);
-#endif
 
+$hook(void, StateIntro, init, StateManager& s)
+{
+	original(self, s);
+
+	// initialize opengl stuff
+	glewExperimental = true;
 	glewInit();
 	glfwInit();
-
-	// Hook to the GameState::keyInput function
-	Hook(reinterpret_cast<void*>(base + idaOffsetFix(0x53880)), reinterpret_cast<void*>(&GameState_keyInput_H), reinterpret_cast<void**>(&GameState_keyInput));
-
-	EnableHook(0);
-
-	return true;
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD _reason, LPVOID lpReserved)
-{
-	if (_reason == DLL_PROCESS_ATTACH)
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Main_Thread, hModule, 0, NULL);
-	return TRUE;
 }
