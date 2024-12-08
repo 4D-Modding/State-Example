@@ -34,6 +34,7 @@ public:
 	void mouseButtonInput(StateManager& s, int button, int action, int mods) override;
 	void keyInput(StateManager&, int key, int scancode, int action, int mods) override;
 	void windowResize(StateManager&, int width, int height) override;
+	void charInput(StateManager&, uint32_t codepoint) override;
 	
 	static void btn1Callback(void* user);
 };

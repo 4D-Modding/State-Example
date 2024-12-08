@@ -73,6 +73,8 @@ void StateTest::init(StateManager& s)
 	ui.viewportUser = s.window;
 	ui.font = &font;
 	ui.qr = &qr;
+	ui.cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+	glfwSetCursor(s.window, ui.cursor);
 
 	btn1.text = "+1";
 	btn1.alignX(gui::ALIGN_CENTER_X);
@@ -130,6 +132,10 @@ void StateTest::keyInput(StateManager& s, int key, int scancode, int action, int
 		s.popState();
 	else
 		ui.keyInput(key, scancode, action, mods);
+}
+void StateTest::charInput(StateManager& s, uint32_t codepoint)
+{
+	ui.charInput(codepoint);
 }
 void StateTest::mouseButtonInput(StateManager& s, int btn, int action, int mods)
 {
