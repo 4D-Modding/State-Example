@@ -68,7 +68,7 @@ void StateTest::init(StateManager& s)
 	qr.shader = qs;
 	qr.init();
 
-	ui = gui::Interface{ s.window };
+	ui.window = s.window;
 	ui.viewportCallback = viewportCallback;
 	ui.viewportUser = s.window;
 	ui.font = &font;
